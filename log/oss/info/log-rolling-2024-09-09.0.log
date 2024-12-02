@@ -1,0 +1,4 @@
+2024-09-09 17:23:12 [INFO ] main SpringApplication.java:660 com.bit.srb.oss.ServiceOssApplication The following 1 profile is active: "dev"
+2024-09-09 17:23:19 [INFO ] main StartupInfoLogger.java:56 com.bit.srb.oss.ServiceOssApplication Started ServiceOssApplication in 7.735 seconds (process running for 8.488)
+2024-09-09 23:21:37 [INFO ] main SpringApplication.java:660 com.bit.srb.oss.ServiceOssApplication The following 1 profile is active: "dev"
+2024-09-09 23:21:42 [INFO ] main StartupInfoLogger.java:56 com.bit.srb.oss.ServiceOssApplication Started ServiceOssApplication in 6.252 seconds (process running for 6.909)

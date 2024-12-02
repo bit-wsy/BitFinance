@@ -1,0 +1,26 @@
+2024-09-20 21:48:32 [INFO ] main SpringApplication.java:660 com.bit.srb.sms.ServiceSmsApplication The following 1 profile is active: "dev"
+2024-09-20 21:48:40 [INFO ] main StartupInfoLogger.java:56 com.bit.srb.sms.ServiceSmsApplication Started ServiceSmsApplication in 10.627 seconds (process running for 11.733)
+2024-09-20 21:57:37 [INFO ] main SpringApplication.java:660 com.bit.srb.sms.ServiceSmsApplication The following 1 profile is active: "dev"
+2024-09-20 21:57:40 [INFO ] main StartupInfoLogger.java:56 com.bit.srb.sms.ServiceSmsApplication Started ServiceSmsApplication in 4.147 seconds (process running for 4.736)
+2024-09-20 21:59:16 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] ---> GET http://service-core/api/core/userInfo/checkMobile/15222282662 HTTP/1.1
+2024-09-20 21:59:16 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] ---> END HTTP (0-byte body)
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] <--- HTTP/1.1 200 (607ms)
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] connection: keep-alive
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] content-type: application/json
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] date: Fri, 20 Sep 2024 13:59:17 GMT
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] keep-alive: timeout=60
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] transfer-encoding: chunked
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] 
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] false
+2024-09-20 21:59:17 [DEBUG] http-nio-8120-exec-1 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] <--- END HTTP (5-byte body)
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] ---> GET http://service-core/api/core/userInfo/checkMobile/15222282663 HTTP/1.1
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] ---> END HTTP (0-byte body)
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] <--- HTTP/1.1 200 (4ms)
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] connection: keep-alive
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] content-type: application/json
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] date: Fri, 20 Sep 2024 14:03:44 GMT
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] keep-alive: timeout=60
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] transfer-encoding: chunked
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] 
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] false
+2024-09-20 22:03:44 [DEBUG] http-nio-8120-exec-3 Slf4jLogger.java:72 com.bit.srb.sms.client.CoreUserInfoClient [CoreUserInfoClient#checkMobile] <--- END HTTP (5-byte body)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bit.srb.core.mapper.UserAccountMapper">
+
+
+<!--    void updateAccount(@Param("bindCode") String bindCode,
+                       @Param("chargeAmt") BigDecimal chargeAmt,
+                       @Param("freezeAmt") BigDecimal freezeAmt);-->
+    <update id="updateAccount">
+        update user_account
+            set
+                amount = amount + #{chargeAmt},
+                freeze_amount = freeze_amount + #{freezeAmt}
+        where user_id = (select id from user_info where bind_code = #{bindCode})
+    </update>
+</mapper>

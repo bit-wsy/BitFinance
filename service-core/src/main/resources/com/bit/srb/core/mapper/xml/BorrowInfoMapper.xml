@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bit.srb.core.mapper.BorrowInfoMapper">
+
+<!--    !!!!!sql语句-->
+    <select id="getBorrowInfoAndUserInfoList" resultType="com.bit.srb.core.pojo.entity.BorrowInfo">
+        select borrow_info.*, borrower.name, borrower.mobile from borrow_info
+        left join borrower on borrower.user_id = borrow_info.user_id
+        where borrow_info.is_deleted = 0
+    </select>
+</mapper>
