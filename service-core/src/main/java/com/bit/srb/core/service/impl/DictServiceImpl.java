@@ -40,7 +40,6 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     private DictMapper dictMapper;
 
     @Transactional(rollbackFor = Exception.class) // 所有异常出现时都回滚
-
     @Override
     public void importData(InputStream inputStream) {
         EasyExcel.read(inputStream, ExcelDictDTO.class, new ExcelDictDTOListener(baseMapper)).sheet().doRead();

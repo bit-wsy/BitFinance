@@ -13,7 +13,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +55,7 @@ public class ApiSmsController {
         String code = RandomUtils.getFourBitRandom();
         map.put("code", code);//使用随机数工具
 
-//        smsService.send(mobile, SmsProperties.TEMPLATE_CODE, map);
+        //smsService.send(mobile, SmsProperties.TEMPLATE_CODE, map);
 
         // 验证码存入redis
         redisTemplate.opsForValue().set("srb:sms:code:" + mobile, code, 5, TimeUnit.MINUTES);
