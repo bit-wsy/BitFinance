@@ -2,7 +2,6 @@ package com.bit.srb.core.controller.api;
 
 
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.hfb.RequestHelper;
 import com.bit.srb.core.pojo.entity.LendReturn;
 import com.bit.srb.core.service.LendReturnService;
@@ -44,11 +43,9 @@ public class LendReturnController {
     @Operation(description = "还款")
     @PostMapping("/auth/commitReturn/{lendReturnId}")
     public R commitReturn(
-            HttpServletRequest httpServletRequest,
+            @RequestHeader("X-User-Id") Long userId,
             @Parameter(description = "还款计划id")
             @PathVariable Long lendReturnId){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
         String formStr = lendReturnService.commitReturn(lendReturnId,userId);
         return R.ok().data("formStr", formStr);
     }

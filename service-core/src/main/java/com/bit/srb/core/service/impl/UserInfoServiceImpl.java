@@ -42,6 +42,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private UserAccountMapper userAccountMapper;
     @Resource
     private UserLoginRecordMapper userLoginRecordMapper;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -74,7 +77,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String password = logInVO.getPassword();
         String mobile = logInVO.getMobile();
         Integer userType = logInVO.getUserType();
-        
+
         // 判断用户是否存在
         QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
         userInfoQueryWrapper
@@ -82,11 +85,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 .eq("user_type",userType);
         UserInfo userInfo = baseMapper.selectOne(userInfoQueryWrapper);
         Assert.notNull(userInfo, ResponseEnum.LOGIN_MOBILE_ERROR);
-        // 密码是否正确
+         // 密码是否正确
         Assert.equals(userInfo.getPassword(), MD5.encrypt(password), ResponseEnum.LOGIN_PASSWORD_ERROR);
-        // 用户是否被禁用
+         // 用户是否被禁用
         Assert.equals(userInfo.getStatus(), UserInfo.STATUS_NORMAL, ResponseEnum.LOGIN_LOKED_ERROR);
-        // 记录登录日志
+         // 记录登录日志
         UserLoginRecord userLoginRecord = new UserLoginRecord();
         userLoginRecord.setUserId(userInfo.getId());
         userLoginRecord.setIp(ip);
@@ -177,5 +180,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfoQueryWrapper.eq("bind_code", bindCode);
         UserInfo userInfo = baseMapper.selectOne(userInfoQueryWrapper);
         return userInfo.getMobile();
+    }
+
+    @Override
+    public UserInfo getUserInfoById(Long userId) {
+        QueryWrapper<UserInfo> userInfoQueryWrapper = new QueryWrapper<>();
+        userInfoQueryWrapper.eq("user_id", userId);
+        return baseMapper.selectOne(userInfoQueryWrapper);
     }
 }

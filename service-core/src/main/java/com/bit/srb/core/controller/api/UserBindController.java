@@ -3,7 +3,6 @@ package com.bit.srb.core.controller.api;
 
 import com.alibaba.fastjson.JSON;
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.hfb.RequestHelper;
 import com.bit.srb.core.pojo.vo.UserBindVO;
 import com.bit.srb.core.service.UserBindService;
@@ -12,10 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -40,12 +36,8 @@ public class UserBindController {
     @PostMapping("/auth/bind")
     public R bind(
             @RequestBody UserBindVO userBindVO,
-            HttpServletRequest httpServletRequest
+            @RequestHeader("X-User-Id") Long userId
     ){
-        // 用户校验
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
-
         // 用户绑定，根据id返回动态表单的字符串
         String formStr = userBindService.commitBindUser(userBindVO, userId);
         return R.ok().data("formStr", formStr);

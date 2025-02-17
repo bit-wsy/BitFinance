@@ -6,6 +6,7 @@ import com.bit.common.result.R;
 import com.bit.common.result.ResponseEnum;
 import com.bit.common.util.RegexValidateUtils;
 import com.bit.srb.base.util.JwtUtils;
+import com.bit.srb.core.pojo.entity.UserInfo;
 import com.bit.srb.core.pojo.vo.LogInVO;
 import com.bit.srb.core.pojo.vo.RegisterVO;
 import com.bit.srb.core.pojo.vo.UserIndexVO;
@@ -96,6 +97,7 @@ public class UserInfoController {
         }
     }
 
+
     @Operation(description = "校验手机号是否被注册")
     @GetMapping("/checkMobile/{mobile}")
     public boolean checkMobile(
@@ -106,11 +108,17 @@ public class UserInfoController {
 
     @Operation(description = "获取首页用户信息")
     @GetMapping("/auth/getIndexUserInfo")
-    public R getIndexUserInfo(HttpServletRequest httpServletRequest){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
+    public R getIndexUserInfo(
+            @RequestHeader("X-User-Id") Long userId     // 从网关注入的Header获取
+    ){
         UserIndexVO userIndexVO = userInfoService.getIndexUserInfo(userId);
         return R.ok().data("userIndexVO", userIndexVO);
+    }
+
+    @GetMapping("/{id}")
+    public UserInfo getUserInfoById(
+            @PathVariable("id") Long id) {
+        return userInfoService.getUserInfoById(id);
     }
 
 }

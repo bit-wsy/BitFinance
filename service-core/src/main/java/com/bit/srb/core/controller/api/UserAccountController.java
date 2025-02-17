@@ -3,7 +3,6 @@ package com.bit.srb.core.controller.api;
 
 import com.alibaba.fastjson.JSON;
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.hfb.RequestHelper;
 import com.bit.srb.core.service.UserAccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,9 +35,8 @@ public class UserAccountController {
     @Operation(description = "用户充值")
     @PostMapping("auth/commitCharge/{chargeAmt}")
     public R commitCharge(
-            @PathVariable BigDecimal chargeAmt, HttpServletRequest httpServletRequest){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
+            @PathVariable BigDecimal chargeAmt,
+            @RequestHeader("X-User-Id") Long userId){
         String formStr = userAccountService.commitCharge(userId, chargeAmt);
         return R.ok().data("formStr",formStr);
     }
@@ -66,9 +64,8 @@ public class UserAccountController {
 
     @Operation(description = "获取账户余额信息")
     @GetMapping("auth/getAccount")
-    public R getAccount(HttpServletRequest httpServletRequest){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
+    public R getAccount(
+            @RequestHeader("X-User-Id") Long userId){
         BigDecimal amount = userAccountService.getAmount(userId);
         return R.ok().data("account", amount);
     }
@@ -77,9 +74,7 @@ public class UserAccountController {
     @PostMapping("auth/commitWithdraw/{fetchAmt}")
     public R commitWithdraw(
             @PathVariable BigDecimal fetchAmt,
-            HttpServletRequest httpServletRequest){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
+            @RequestHeader("X-User-Id") Long userId){
         String formStr = userAccountService.commitWithdraw(userId, fetchAmt);
         return R.ok().data("formStr", formStr);
     }

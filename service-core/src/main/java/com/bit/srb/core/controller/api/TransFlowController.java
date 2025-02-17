@@ -2,14 +2,13 @@ package com.bit.srb.core.controller.api;
 
 
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.pojo.entity.TransFlow;
 import com.bit.srb.core.service.TransFlowService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,9 +32,7 @@ public class TransFlowController {
 
     @Operation(description = "获取个人资金列表")
     @GetMapping("/list")
-    public R getTransFlowList(HttpServletRequest httpServletRequest){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
+    public R getTransFlowList(@RequestHeader("X-User-Id") Long userId){
         List<TransFlow> transFlowList = transFlowService.getTransFlowList(userId);
         return R.ok().data("list", transFlowList);
     }

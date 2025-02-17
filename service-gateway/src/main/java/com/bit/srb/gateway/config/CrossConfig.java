@@ -13,22 +13,19 @@ public class CrossConfig {
         @Bean
         public CorsWebFilter corsFilter() {
             CorsConfiguration config = new CorsConfiguration();
-//            config.setAllowCredentials(true); //是否允许携带cookie
-//            config.addAllowedOrigin("*"); //可接受的域，是一个具体域名或者*（代表任意域名）
-//            config.addAllowedHeader("*"); //允许携带的头
-//            config.addAllowedMethod("*"); //允许访问的方式
 
-            // 这里仅为了说明问题，配置为放行所有域名，生产环境请对此进行修改
-            config.addAllowedOriginPattern("*");
-            // 放行的请求头
+            // 允许的域名（开发环境可放宽，生产环境应指定具体域名）
+            config.addAllowedOriginPattern("*"); // 支持 localhost 所有端口
+
+            // 允许的请求头
             config.addAllowedHeader("*");
-            // 放行的请求方式，主要有：GET, POST, PUT, DELETE, OPTIONS
+            // 允许的请求方法
             config.addAllowedMethod("*");
-            // 暴露头部信息
-//            config.addExposedHeader("*");
-            // 是否发送cookie
+            // 允许携带凭证（如 token）
             config.setAllowCredentials(true);
-
+            // 暴露自定义响应头（前端可读取的头部）
+            config.addExposedHeader("token");
+            config.addExposedHeader("Set-Cookie"); // 如果需要 Cookie
 
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", config);

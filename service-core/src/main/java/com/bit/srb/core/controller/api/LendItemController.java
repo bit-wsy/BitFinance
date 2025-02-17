@@ -3,7 +3,6 @@ package com.bit.srb.core.controller.api;
 
 import com.alibaba.fastjson.JSON;
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.hfb.RequestHelper;
 import com.bit.srb.core.pojo.entity.LendItem;
 import com.bit.srb.core.pojo.vo.InvestVO;
@@ -41,12 +40,9 @@ public class LendItemController {
     public R commitInvest(
             @Parameter(description = "投资人信息")
             @RequestBody InvestVO investVO,
-            HttpServletRequest httpServletRequest
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestHeader("X-User-Name") String userName
             ){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
-        String userName = JwtUtils.getUserName(token);
-
         investVO.setInvestUserId(userId);
         investVO.setInvestName(userName);
 

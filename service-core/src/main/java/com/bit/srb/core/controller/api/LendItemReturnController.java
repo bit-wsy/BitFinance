@@ -2,17 +2,12 @@ package com.bit.srb.core.controller.api;
 
 
 import com.bit.common.result.R;
-import com.bit.srb.base.util.JwtUtils;
 import com.bit.srb.core.pojo.entity.LendItemReturn;
 import com.bit.srb.core.service.LendItemReturnService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,10 +30,8 @@ public class LendItemReturnController {
     @GetMapping("/auth/list/{lendId}")
     public R getLendItemReturnByUserIdAndLendId(
             @PathVariable Long lendId,
-            HttpServletRequest httpServletRequest
+            @RequestHeader("X-User-Id") Long userId
     ){
-        String token = httpServletRequest.getHeader("token");
-        Long userId = JwtUtils.getUserId(token);
         List<LendItemReturn> lendItemReturnList =  lendItemReturnService.getLendItemReturnByUserIdAndLendId(userId, lendId);
         return R.ok().data("list", lendItemReturnList);
     }
