@@ -6,6 +6,7 @@ import com.bit.common.exception.Assert;
 import com.bit.common.result.ResponseEnum;
 import com.bit.srb.core.enums.LendItemStatusEnum;
 import com.bit.srb.core.enums.LendStatusEnum;
+import com.bit.srb.core.enums.OrderState;
 import com.bit.srb.core.enums.TransTypeEnum;
 import com.bit.srb.core.hfb.FormHelper;
 import com.bit.srb.core.hfb.HfbConst;
@@ -15,15 +16,9 @@ import com.bit.srb.core.mapper.LendMapper;
 import com.bit.srb.core.mapper.UserAccountMapper;
 import com.bit.srb.core.mapper.UserInfoMapper;
 import com.bit.srb.core.pojo.bo.TransFlowBO;
-import com.bit.srb.core.pojo.entity.Lend;
-import com.bit.srb.core.pojo.entity.LendItem;
-import com.bit.srb.core.pojo.entity.UserAccount;
-import com.bit.srb.core.pojo.entity.UserInfo;
+import com.bit.srb.core.pojo.entity.*;
 import com.bit.srb.core.pojo.vo.InvestVO;
-import com.bit.srb.core.service.LendItemService;
-import com.bit.srb.core.service.LendService;
-import com.bit.srb.core.service.TransFlowService;
-import com.bit.srb.core.service.UserAccountService;
+import com.bit.srb.core.service.*;
 import com.bit.srb.core.util.LendNoUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -64,6 +60,9 @@ public class LendItemServiceImpl extends ServiceImpl<LendItemMapper, LendItem> i
 
     @Resource
     private UserAccountService userAccountService;
+
+    @Resource
+    private OrderService orderService;
 
     @Override
     public String commitInvest(InvestVO investVO) {
@@ -98,7 +97,14 @@ public class LendItemServiceImpl extends ServiceImpl<LendItemMapper, LendItem> i
         lendItem.setStatus(LendItemStatusEnum.DEFAULT_STATUS.getStatus());
         lendItem.setRealAmount(new BigDecimal(0));
 
-        baseMapper.insert(lendItem);
+        Order order = new Order();
+        order.setStatus(OrderState.PENDING);
+        order.setLendItem(lendItem);
+
+        orderService.getOrderRepository().save(order);
+        orderService.getDelayedQueue().offer(order, 30, TimeUnit.MINUTES);
+        // baseMapper.insert(lendItem);
+
         // 组装表单
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("agentId", HfbConst.AGENT_ID);
@@ -131,7 +137,26 @@ public class LendItemServiceImpl extends ServiceImpl<LendItemMapper, LendItem> i
     @Override
     public String notify(Map<String, Object> paramMap) {
         // 幂等性判断
-        String agentBillNo = (String)paramMap.get("agentBillNo");
+        String agentBillNo = "";
+        List<Order> orderList = orderService.getOrderRepository().findAll();
+        Order order = new Order();
+        for (Order o : orderList) {
+            agentBillNo = (String)paramMap.get("agentBillNo");
+            if(getLendItemByAgentBillNo(agentBillNo).equals(o.getLendItem())) {
+                order = o;
+            }
+        }
+        if (order.getStatus() == OrderState.PAID) {
+            return "success"; // 幂等处理
+        }
+        // 修改订单状态
+        order.setStatus(OrderState.PAID);
+        orderService.getOrderRepository().save(order);
+        // 从队列移除
+        orderService.getDelayedQueue().remove(order);
+
+        baseMapper.insert(order.getLendItem());
+
         if(transFlowService.isTransFlowSaved(agentBillNo)){
             log.warn("幂等性判断");
             return "success";
@@ -190,14 +215,19 @@ public class LendItemServiceImpl extends ServiceImpl<LendItemMapper, LendItem> i
         }
     }
 
+    private LendItem getLendItemByAgentBillNo(String agentBillNo) {
+        QueryWrapper<LendItem> lendItemQueryWrapper = new QueryWrapper<>();
+        lendItemQueryWrapper.eq("lend_item_no", agentBillNo);
+        return baseMapper.selectOne(lendItemQueryWrapper);
+    }
+
     @Override
     public List<LendItem> getLendItemByLendId(Long lendId, Integer status) {
         QueryWrapper<LendItem> lendItemQueryWrapper = new QueryWrapper<>();
         lendItemQueryWrapper
                 .eq("lend_id", lendId)
                 .eq("status", status);
-        List<LendItem> lendItems = baseMapper.selectList(lendItemQueryWrapper);
-        return lendItems;
+        return baseMapper.selectList(lendItemQueryWrapper);
     }
 
     @Override
