@@ -10,9 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -96,6 +100,53 @@ public class OrderService {
             if (order.getStatus() == OrderState.PENDING) {
                 cancelOrder(order.getLendItem().getLendItemNo(), true);
             }
+        }
+    }
+
+    // 超卖和重复下单处理
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    public String handleOrder(String userId, String stockKey, String orderKey) {
+        String luaScript = """
+                local stockKey = KEYS[1]       -- 库存的 Redis Key
+                local orderKey = KEYS[2]       -- 用户下单记录的 Redis Key
+                local userId = ARGV[1]         -- 用户 ID
+                local stockAmount = tonumber(redis.call('GET', stockKey)) -- 当前库存
+
+                -- 检查库存是否存在
+                if not stockAmount then
+                    return -3 -- 库存未初始化
+                end
+
+                -- 检查库存是否足够
+                if stockAmount <= 0 then
+                    return -1 -- 库存不足
+                end
+
+                -- 检查用户是否已下单
+                if redis.call('SISMEMBER', orderKey, userId) == 1 then
+                    return -2 -- 重复下单
+                end
+
+                -- 扣减库存并记录用户下单
+                redis.call('DECR', stockKey)
+                redis.call('SADD', orderKey, userId)
+
+                return 1 -- 下单成功"""; // 加载 Lua 脚本内容
+
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(luaScript);
+        redisScript.setResultType(Long.class);
+
+        Long result = redisTemplate.execute(redisScript, Collections.singletonList(stockKey), orderKey, userId);
+
+        if (result == -1) {
+            return "库存不足";
+        } else if (result == -2) {
+            return "重复下单";
+        } else {
+            return "下单成功";
         }
     }
 }

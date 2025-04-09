@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +37,9 @@ public class LendItemController {
     @Resource
     private LendItemService lendItemService;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @Operation(description = "投标")
     @PostMapping("/auth/commitInvest")
     public R commitInvest(
@@ -43,11 +48,16 @@ public class LendItemController {
             @RequestHeader("X-User-Id") Long userId,
             @RequestHeader("X-User-Name") String userName
             ){
-        investVO.setInvestUserId(userId);
-        investVO.setInvestName(userName);
+//        investVO.setInvestUserId(userId);
+//        investVO.setInvestName(userName);
+//
+//        String formStr = lendItemService.commitInvest(investVO);
+//        return R.ok().data("formStr", formStr);
 
-        String formStr = lendItemService.commitInvest(investVO);
-        return R.ok().data("formStr", formStr);
+        // 将 InvestVO 对象发送到 RabbitMQ
+        rabbitTemplate.convertAndSend("order.exchange", "order.routing.key", investVO);
+        // 立即返回响应，告知前端订单已提交
+        return R.ok().data("message", "投资请求已提交，正在处理中");
     }
 
     @Operation(description = "回调函数")
